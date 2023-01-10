@@ -1,4 +1,5 @@
 import json
+import zipfile
 
 class SourceGame:
     Official = "official"
@@ -66,4 +67,10 @@ class PaintObjectFile:
         file = open(filename, "w")
         file.write(result)
         file.close()
+    
+    def to_parkobj(self, filename):
+        self.to_json('object.json')
+
+        with zipfile.ZipFile(filename, mode='w', compression=zipfile.ZIP_DEFLATED) as myzip:
+            myzip.write('object.json')
     

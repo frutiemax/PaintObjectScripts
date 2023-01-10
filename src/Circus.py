@@ -12,18 +12,18 @@ def paint_circus_tent(circus_structure, direction, al, cl):
     circus_structure.boundbox = BoundBox(Coords(al + 16, cl + 16, 3), Coords(24, 24, 47))
     circus_structure.paint_type = PaintType.AddImageAsParent
     circus_structure.image_id_base = ImageIdBase.Car0
-    circus_structure.image_id_offset = direction
 
 def paint_circus(paint_object, track_element, direction, track_sequence,
     vehicle_index, vehicle_sprite_direction, vehicle_pitch, vehicle_num_peeps):
 
     circus_structure = PaintStruct()
-    circus_structure.track_sequence = track_sequence
-    circus_structure.element = track_element
-    circus_structure.direction = direction
+    circus_structure.key.element = track_element
+    circus_structure.key.direction = direction
+    circus_structure.image_id_offset = "direction"
     
     #transform the track sequence with the track map
     track_sequence = TrackMap3x3[direction][track_sequence]
+    circus_structure.key.track_sequence = track_sequence
 
     match track_sequence:
         case 1:
@@ -77,7 +77,7 @@ def generate_json():
     paint_object.add_paint_struct(height_supports)
 
     sequenceTable = TrackSequenceTable()
-    sequenceTable.id = "track_map_3x3"
+    sequenceTable.trackElement = TrackElement.FlatTrack3x3
     sequenceTable.sequences = TrackMap3x3
     paint_object.add_sequence_table(sequenceTable)
 
@@ -94,6 +94,15 @@ def generate_json():
         [Edge.SW, Edge.SE],
         [Edge.SW]]
     paint_object.add_edge_table(edgeTable)
+
+    directionImageId = ImageIdOffset()
+    directionImageId.id = "direction"
+    values = [0, 1, 2, 3]
+    for value in values:
+        key = PaintStructKey()
+        key.direction = value
+        directionImageId.add_entry(key, [value])
+    paint_object.add_image_id_offset(directionImageId)
     
     height_supports = HeightSupportsTable()
     height_supports.height_offset = 128
@@ -109,7 +118,7 @@ def generate_json():
     paint_object.add_author("OpenRCT2 Developpers")
     paint_object.set_source_game(SourceGame.Official)
 
-    paint_object.to_json("circus_paint.json")
+    paint_object.to_parkobj("circus_paint.parkobj")
 
 if __name__ == "__main__":
     generate_json()
