@@ -25,6 +25,7 @@ def paint_twist_structure(paint_object, track_element, direction, xOffset, yOffs
     paintStruct.primary_colour_index = 0
     paintStruct.secondary_colour_index = 0
     paintStruct.image_id_scheme = Scheme.Misc
+    paintStruct.key.vehicle_index = 0
     paint_object.add_paint_struct(paintStruct)
 
     #peeps
@@ -49,7 +50,7 @@ def paint_twist(paint_object, track_element, direction, vehicle_num_peeps, track
     elif track_sequence == 3:
         paint_twist_structure(paint_object, track_element, direction, 32, -32, vehicle_num_peeps, track_sequence)
     elif track_sequence == 5:
-        paint_twist_structure(paint_object, track_element, direction, 0, 32, vehicle_num_peeps, track_sequence)
+        paint_twist_structure(paint_object, track_element, direction, 0, -32, vehicle_num_peeps, track_sequence)
     elif track_sequence == 6:
         paint_twist_structure(paint_object, track_element, direction, -32, 32, vehicle_num_peeps, track_sequence)
     elif track_sequence == 7:
@@ -85,13 +86,12 @@ def generate_json():
     track_element = TrackElement.FlatTrack3x3
     vehicle_pitch_values = list(range(216))
     vehicle_sprite_direction_values = [0, 8, 16, 24]
-    vehicle_num_peeps_values = list(range(18))
+    vehicle_num_peeps_values = list(range(19))
 
     paint_object = PaintObjectFile()
 
     #floor + fences + supports
     base_paint_struct = PaintStruct()
-    base_paint_struct.track_sequence_mapping = "track_map_3x3"
     base_paint_struct.edges = "edges_3x3"
     base_paint_struct.supports = SupportsType.WoodenA
     base_paint_struct.image_id_scheme = Scheme.Misc
@@ -100,6 +100,15 @@ def generate_json():
     base_paint_struct.element = track_element
     paint_object.add_paint_struct(base_paint_struct)
     
+    #generate single keys
+    for arg in track_sequences:
+        singleKey = PaintStruct()
+        singleKey.key.track_sequence = arg
+        paint_object.add_paint_struct(singleKey)
+    noPeepKey = PaintStruct()
+    noPeepKey.key.vehicle_num_peeps = 0
+    paint_object.add_paint_struct(noPeepKey)
+
     #generate all the possible combinations to pass through the paint function
     #we only need the peep_num variable for the loop
     args = [[paint_object, track_element, direction, vehicle_num_peeps, track_sequence]
@@ -113,14 +122,13 @@ def generate_json():
     #height supports
     height_supports = PaintStruct()
     height_supports.key.element = track_element
-    height_supports.key.track_sequence_mapping = "track_map_3x3"
     height_supports.paint_type = PaintType.SetSegmentsSupportsHeight
     height_supports.height_supports = "heightSupports_3x3"
     paint_object.add_paint_struct(height_supports)
 
     #track sequence table
     sequenceTable = TrackSequenceTable()
-    sequenceTable.id = "track_map_3x3"
+    sequenceTable.trackElement = TrackElement.FlatTrack3x3
     sequenceTable.sequences = TrackMap3x3
     paint_object.add_sequence_table(sequenceTable)
 
@@ -185,11 +193,14 @@ def generate_json():
         #key.vehicle_num_peeps = arg[3]
         peepImageId.add_entry(key, values)
     paint_object.add_image_id_offset(peepImageId)
+    paint_object.set_vehicle_indices([0])
 
     paint_object.set_object_id("openrct2.paint.twist")
     paint_object.set_object_version("1.0")
     paint_object.add_author("OpenRCT2 Developpers")
     paint_object.set_source_game(SourceGame.Official)
+
+    paint_object.to_json("twist_paint.json")
     paint_object.to_parkobj("twist_paint.parkobj")
 
 if __name__ == "__main__":

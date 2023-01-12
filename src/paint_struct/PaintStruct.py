@@ -67,7 +67,7 @@ class ImageIdOffset:
 
 class PaintStructKey:
     def __init__(self):
-        self.element = TrackElement.FlatTrack3x3
+        self.element = None
         self.direction = None
         self.track_sequence = None
         self.track_sequence_mapping = None
@@ -79,7 +79,8 @@ class PaintStructKey:
     def to_dict(self):
         result = {}
 
-        result["trackElement"] = self.element
+        if self.element != None:
+            result["trackElement"] = self.element
 
         if self.track_sequence_mapping != None:
             result["trackSequenceMapping"] = self.track_sequence_mapping

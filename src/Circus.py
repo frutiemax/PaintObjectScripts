@@ -61,17 +61,15 @@ def generate_json():
     base_paint_struct.image_id_scheme = Scheme.Misc
     base_paint_struct.floor = FloorType.Cork
     base_paint_struct.fences = FenceType.Ropes
-    base_paint_struct.element = track_element
+    base_paint_struct.key.element = track_element
     paint_object.add_paint_struct(base_paint_struct)
     
-    for track_sequence in track_sequences:
-        for direction in directions:
+    for direction in directions:
+        for track_sequence in track_sequences:
             paint_circus(paint_object, track_element, direction, track_sequence, None, None, None, None)
     
     #height supports
     height_supports = PaintStruct()
-    height_supports.element = track_element
-    height_supports.track_sequence_mapping = "track_map_3x3"
     height_supports.paint_type = PaintType.SetSegmentsSupportsHeight
     height_supports.height_supports = "heightSupports_3x3"
     paint_object.add_paint_struct(height_supports)
@@ -112,12 +110,14 @@ def generate_json():
     height_supports.add_support_segment(HeightSupportsSegment(7, [Segment.D0, Segment.C0, Segment.D4]))
     height_supports.id = "heightSupports_3x3"
     paint_object.add_height_support_table(height_supports)
+    paint_object.set_vehicle_indices([0])
 
     paint_object.set_object_id("openrct2.paint.circus")
     paint_object.set_object_version("1.0")
     paint_object.add_author("OpenRCT2 Developpers")
     paint_object.set_source_game(SourceGame.Official)
 
+    paint_object.to_json("circus_paint.json")
     paint_object.to_parkobj("circus_paint.parkobj")
 
 if __name__ == "__main__":
