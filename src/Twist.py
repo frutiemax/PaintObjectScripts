@@ -33,7 +33,7 @@ def paint_twist_structure(paint_object, track_element, direction, xOffset, yOffs
     #paint the structure first
     paintStruct = PaintStruct()
     paintStruct.key.element = TrackElement.FlatTrack3x3
-    paintStruct.key.direction = direction
+    #paintStruct.key.direction = direction
     paintStruct.paint_type = PaintType.AddImageAsParent
     paintStruct.image_id_base = ImageIdBase.Car0
     paintStruct.key.element = track_element
@@ -120,8 +120,7 @@ def generate_json():
 
     #generate all the possible combinations to pass through the paint function
     #we only need the peep_num variable for the loop
-    args = [[paint_object, track_element, direction, vehicle_num_peeps]
-        for direction in directions
+    args = [[paint_object, track_element, 0, vehicle_num_peeps]
         for vehicle_num_peeps in vehicle_num_peeps_values]
 
     for arg in args:
