@@ -65,6 +65,37 @@ class ImageIdOffset:
     def to_dict(self):
         return { "id": self.id, "entries": self.entries }
 
+class BoundBoxEntry:
+    def __init__(self):
+        self.id = ""
+        self.values = []
+    def add_value(self, value):
+        self.values.append(value.to_dict())
+    def to_dict(self):
+        return {"id": self.id, "values": self.values}
+
+class BoundBoxEntryValue:
+    def __init__(self):
+        self.coords = Coords(0, 0, 0)
+        self.bound_box = BoundBox(Coords(0, 0, 0), Coords(0, 0, 0))
+        self.track_sequence = 0
+    def to_dict(self):
+        result = {}
+        result["trackSequence"] = self.track_sequence
+        result["offset_x"] = self.coords.x
+        result["offset_y"] = self.coords.y
+        result["offset_z"] = self.coords.z
+
+        result["bb_offset_x"] = self.bound_box.offset.x
+        result["bb_offset_y"] = self.bound_box.offset.y
+        result["bb_offset_z"] = self.bound_box.offset.z
+
+        result["bb_length_x"] = self.bound_box.length.x
+        result["bb_length_y"] = self.bound_box.length.y
+        result["bb_length_z"] = self.bound_box.length.z
+        return result
+    
+
 class PaintStructKey:
     def __init__(self):
         self.element = None
@@ -125,8 +156,7 @@ class PaintStruct:
         self.secondary_colour_index = None
         self.image_id_offset = None
         self.image_id_offset_index = None
-        self.offset = None
-        self.boundbox = None
+        self.boundbox_id = None
         self.height_supports = None
 
     def to_dict(self):
@@ -171,18 +201,8 @@ class PaintStruct:
         if self.image_id_scheme != None:
             result["imageIdScheme"] = self.image_id_scheme
         
-        if self.offset != None:
-            result["offset_x"] = self.offset.x
-            result["offset_y"] = self.offset.y
-            result["offset_z"] = self.offset.z
-        
-        if self.boundbox != None:
-            result["bb_offset_x"] = self.boundbox.offset.x
-            result["bb_offset_y"] = self.boundbox.offset.y
-            result["bb_offset_z"] = self.boundbox.offset.z
-            result["bb_length_x"] = self.boundbox.length.x
-            result["bb_length_y"] = self.boundbox.length.y
-            result["bb_length_z"] = self.boundbox.length.z
+        if self.boundbox_id != None:
+            result["boundBoxId"] = self.boundbox_id
         
         if self.height_supports != None:
             result["supportsHeightId"] = self.height_supports

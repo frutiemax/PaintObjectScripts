@@ -7,43 +7,37 @@ from paint_struct.BoundBox import *
 from paint_struct.TrackSequenceTable import *
 from paint_struct.EdgeTable import *
 
-def paint_circus_tent(circus_structure, direction, al, cl):
-    circus_structure.offset = Coords(al, cl, 3)
-    circus_structure.boundbox = BoundBox(Coords(al + 16, cl + 16, 3), Coords(24, 24, 47))
-    circus_structure.paint_type = PaintType.AddImageAsParent
-    circus_structure.image_id_base = ImageIdBase.Car0
-
-def paint_circus(paint_object, track_element, direction, track_sequence,
-    vehicle_index, vehicle_sprite_direction, vehicle_pitch, vehicle_num_peeps):
-
+def paint_circus(paint_object, track_element, direction):
     circus_structure = PaintStruct()
     circus_structure.key.element = track_element
     circus_structure.key.direction = direction
     circus_structure.image_id_offset = "direction"
-    
-    #transform the track sequence with the track map
-    track_sequence = TrackMap3x3[direction][track_sequence]
-    circus_structure.key.track_sequence = track_sequence
+    circus_structure.boundbox_id = "structure"
+    circus_structure.paint_type = PaintType.AddImageAsParent
+    paint_object.add_paint_struct(circus_structure)
 
+def calculate_bound_box(boundBoxEntry, boundBoxValue, al, cl):
+    boundBoxValue.coords = Coords(al, cl, 3)
+    boundBoxValue.bound_box = BoundBox(Coords(al + 16, cl + 16, 3), Coords(24, 24, 47))
+    boundBoxEntry.add_value(boundBoxValue)
+
+def calculate_bound_boxes(boundBoxEntry, track_sequence):
+    boundBoxValue = BoundBoxEntryValue()
+    boundBoxValue.track_sequence = track_sequence
     match track_sequence:
         case 1:
-            paint_circus_tent(circus_structure, direction, 32, 32)
-            paint_object.add_paint_struct(circus_structure)
+            calculate_bound_box(boundBoxEntry, boundBoxValue, 32, 32)
         case 3:
-            paint_circus_tent(circus_structure, direction, 32, -32)
-            paint_object.add_paint_struct(circus_structure)
+            calculate_bound_box(boundBoxEntry, boundBoxValue, 32, -32)
         case 5:
-            paint_circus_tent(circus_structure, direction, 0, -32)
-            paint_object.add_paint_struct(circus_structure)
+            calculate_bound_box(boundBoxEntry, boundBoxValue, 0, -32)
         case 6:
-            paint_circus_tent(circus_structure, direction, -32, 32)
-            paint_object.add_paint_struct(circus_structure)
+            calculate_bound_box(boundBoxEntry, boundBoxValue, -32, 32)
         case 7:
-            paint_circus_tent(circus_structure, direction, -32, -32)
-            paint_object.add_paint_struct(circus_structure)
+            calculate_bound_box(boundBoxEntry, boundBoxValue, -32, -32)
         case 8:
-            paint_circus_tent(circus_structure, direction, -32, 0)
-            paint_object.add_paint_struct(circus_structure)
+            calculate_bound_box(boundBoxEntry, boundBoxValue, -32, 0)
+    
 
 def generate_json():
     #generate all the possible combinations to pass through the function
@@ -65,8 +59,7 @@ def generate_json():
     paint_object.add_paint_struct(base_paint_struct)
     
     for direction in directions:
-        for track_sequence in track_sequences:
-            paint_circus(paint_object, track_element, direction, track_sequence, None, None, None, None)
+        paint_circus(paint_object, track_element, direction)
     
     #height supports
     height_supports = PaintStruct()
@@ -74,10 +67,18 @@ def generate_json():
     height_supports.height_supports = "heightSupports_3x3"
     paint_object.add_paint_struct(height_supports)
 
+    #track sequence table
     sequenceTable = TrackSequenceTable()
     sequenceTable.trackElement = TrackElement.FlatTrack3x3
     sequenceTable.sequences = TrackMap3x3
     paint_object.add_sequence_table(sequenceTable)
+
+    #boundbox entries
+    structure_entry = BoundBoxEntry()
+    structure_entry.id = "structure"
+    for track_sequence in track_sequences:
+        calculate_bound_boxes(structure_entry, track_sequence)
+    paint_object.add_bound_box(structure_entry)
 
     edgeTable = EdgeTable()
     edgeTable.id = "edges_3x3"

@@ -13,6 +13,7 @@ class PaintObjectFile:
         self.height_tables = []
         self.imageIdOffsets = []
         self.vehicleIndices = []
+        self.bound_boxes = []
         self.id = ""
         self.version = ""
         self.authors = []
@@ -30,6 +31,9 @@ class PaintObjectFile:
     
     def add_image_id_offset(self, image_id_offset):
         self.imageIdOffsets.append(image_id_offset.to_dict())
+    
+    def add_bound_box(self, bound_box):
+        self.bound_boxes.append(bound_box.to_dict())
 
     def set_vehicle_indices(self, vehicle_indices):
         self.vehicleIndices = vehicle_indices
@@ -65,6 +69,7 @@ class PaintObjectFile:
         dict["heightSupportsTables"] = self.height_tables
         dict["imageIdOffsets"] = self.imageIdOffsets
         dict["vehicleIndices"] = self.vehicleIndices
+        dict["boundBoxes"] = self.bound_boxes
         dict["paintStructs"] = self.paint_structs
         result += json.dumps(dict, indent=4)
 

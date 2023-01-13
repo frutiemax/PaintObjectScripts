@@ -7,16 +7,38 @@ from paint_struct.BoundBox import *
 from paint_struct.TrackSequenceTable import *
 from paint_struct.EdgeTable import *
 
-def paint_twist_structure(paint_object, track_element, direction, xOffset, yOffset, vehicle_num_peeps, track_sequence):
+def calculate_bound_box(boundBoxEntry, boundBoxValue, xOffset, yOffset):
+    boundBoxValue.coords = Coords(xOffset, yOffset, 7)
+    boundBoxValue.bound_box = BoundBox(Coords(xOffset + 16, yOffset + 16, 7), Coords(24, 24, 48))
+    boundBoxEntry.add_value(boundBoxValue)
+
+def calculate_bound_boxes(boundBoxEntry, track_sequence):
+    boundBoxValue = BoundBoxEntryValue()
+    boundBoxValue.track_sequence = track_sequence
+    match track_sequence:
+        case 1:
+            calculate_bound_box(boundBoxEntry, boundBoxValue, 32, 32)
+        case 3:
+            calculate_bound_box(boundBoxEntry, boundBoxValue, 32, -32)
+        case 5:
+            calculate_bound_box(boundBoxEntry, boundBoxValue, 0, -32)
+        case 6:
+            calculate_bound_box(boundBoxEntry, boundBoxValue, -32, 32)
+        case 7:
+            calculate_bound_box(boundBoxEntry, boundBoxValue, -32, -32)
+        case 8:
+            calculate_bound_box(boundBoxEntry, boundBoxValue, -32, 0)
+
+def paint_twist_structure(paint_object, track_element, direction, xOffset, yOffset, vehicle_num_peeps):
     #paint the structure first
     paintStruct = PaintStruct()
     paintStruct.key.element = TrackElement.FlatTrack3x3
-    paintStruct.key.track_sequence = track_sequence
     paintStruct.key.direction = direction
     paintStruct.paint_type = PaintType.AddImageAsParent
     paintStruct.image_id_base = ImageIdBase.Car0
     paintStruct.key.element = track_element
     paintStruct.image_id_offset = "structure"
+    paintStruct.boundbox_id = "boundbox"
 
     paintStruct.offset = Coords(xOffset, yOffset, 7)
     paintStruct.boundbox = BoundBox(Coords(xOffset + 16, yOffset + 16, 7), Coords(24, 24, 48))
@@ -43,20 +65,8 @@ def paint_twist_structure(paint_object, track_element, direction, xOffset, yOffs
         paint_object.add_paint_struct(paintStruct)
         index = index + 1
 
-def paint_twist(paint_object, track_element, direction, vehicle_num_peeps, track_sequence):
-    track_sequence = TrackMap3x3[direction][track_sequence]
-    if track_sequence == 1:
-        paint_twist_structure(paint_object, track_element, direction, 32, 32, vehicle_num_peeps, track_sequence)
-    elif track_sequence == 3:
-        paint_twist_structure(paint_object, track_element, direction, 32, -32, vehicle_num_peeps, track_sequence)
-    elif track_sequence == 5:
-        paint_twist_structure(paint_object, track_element, direction, 0, -32, vehicle_num_peeps, track_sequence)
-    elif track_sequence == 6:
-        paint_twist_structure(paint_object, track_element, direction, -32, 32, vehicle_num_peeps, track_sequence)
-    elif track_sequence == 7:
-        paint_twist_structure(paint_object, track_element, direction, -32, -32, vehicle_num_peeps, track_sequence)
-    elif track_sequence == 8:
-        paint_twist_structure(paint_object, track_element, direction, -32, 0, vehicle_num_peeps, track_sequence)
+def paint_twist(paint_object, track_element, direction, vehicle_num_peeps):
+    paint_twist_structure(paint_object, track_element, direction, 32, 32, vehicle_num_peeps)
 
 def calculate_structure_image_id(direction, vehicle_sprite_direction, vehicle_pitch):
     frameNum = (direction % 88) % 216
@@ -111,13 +121,12 @@ def generate_json():
 
     #generate all the possible combinations to pass through the paint function
     #we only need the peep_num variable for the loop
-    args = [[paint_object, track_element, direction, vehicle_num_peeps, track_sequence]
-        for track_sequence in track_sequences
+    args = [[paint_object, track_element, direction, vehicle_num_peeps]
         for direction in directions
         for vehicle_num_peeps in vehicle_num_peeps_values]
 
     for arg in args:
-        paint_twist(arg[0], arg[1], arg[2], arg[3], arg[4])
+        paint_twist(arg[0], arg[1], arg[2], arg[3])
     
     #height supports
     height_supports = PaintStruct()
@@ -125,6 +134,13 @@ def generate_json():
     height_supports.paint_type = PaintType.SetSegmentsSupportsHeight
     height_supports.height_supports = "heightSupports_3x3"
     paint_object.add_paint_struct(height_supports)
+
+    #boundboxes
+    boundBoxEntry = BoundBoxEntry()
+    boundBoxEntry.id = "boundbox"
+    for track_sequence in track_sequences:
+        calculate_bound_boxes(boundBoxEntry, track_sequence)
+    paint_object.add_bound_box(boundBoxEntry)
 
     #track sequence table
     sequenceTable = TrackSequenceTable()
