@@ -47,7 +47,6 @@ def paint_twist_structure(paint_object, track_element, direction, xOffset, yOffs
     paintStruct.primary_colour_index = 0
     paintStruct.secondary_colour_index = 0
     paintStruct.image_id_scheme = Scheme.Misc
-    paintStruct.key.vehicle_index = 0
     paint_object.add_paint_struct(paintStruct)
 
     #peeps
