@@ -8,8 +8,6 @@ class SourceGame:
 class PaintObjectFile:
     def __init__(self):
         self.paint_structs = []
-        self.sequence_tables = []
-        self.edge_tables = []
         self.height_tables = []
         self.imageIdOffsets = []
         self.vehicleIndices = []
@@ -19,12 +17,6 @@ class PaintObjectFile:
         self.authors = []
         self.object_type = "paint"
         self.source_game = "official"
-    
-    def add_sequence_table(self, sequence_table):
-        self.sequence_tables.append(sequence_table.to_dict())
-    
-    def add_edge_table(self, edge_table):
-        self.edge_tables.append(edge_table.to_dict())
     
     def add_height_support_table(self, height_table):
         self.height_tables.append(height_table.to_dict())
@@ -64,12 +56,10 @@ class PaintObjectFile:
         dict = {"id": self.id, "version": self.version, "authors": self.authors,
             "objectType": self.object_type, "sourceGame": self.source_game}
         
-        dict["trackSequenceTables"] = self.sequence_tables
-        dict["edgesTables"] = self.edge_tables
         dict["heightSupportsTables"] = self.height_tables
-        dict["imageIdOffsets"] = self.imageIdOffsets
         dict["vehicleIndices"] = self.vehicleIndices
         dict["boundBoxes"] = self.bound_boxes
+        dict["imageIdOffsets"] = self.imageIdOffsets
         dict["paintStructs"] = self.paint_structs
         result += json.dumps(dict, indent=4)
 

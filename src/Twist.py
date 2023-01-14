@@ -139,27 +139,6 @@ def generate_json():
     for track_sequence in track_sequences:
         calculate_bound_boxes(boundBoxEntry, track_sequence)
     paint_object.add_bound_box(boundBoxEntry)
-
-    #track sequence table
-    sequenceTable = TrackSequenceTable()
-    sequenceTable.trackElement = TrackElement.FlatTrack3x3
-    sequenceTable.sequences = TrackMap3x3
-    paint_object.add_sequence_table(sequenceTable)
-
-    #edge tables
-    edgeTable = EdgeTable()
-    edgeTable.id = "edges_3x3"
-    edgeTable.edges = [
-        [],
-        [Edge.NE, Edge.NW],
-        [Edge.NE],
-        [Edge.NE, Edge.SE],
-        [Edge.NW],
-        [Edge.SE],
-        [Edge.SW, Edge.NW],
-        [Edge.SW, Edge.SE],
-        [Edge.SW]]
-    paint_object.add_edge_table(edgeTable)
     
     #height support tables
     height_supports = HeightSupportsTable()

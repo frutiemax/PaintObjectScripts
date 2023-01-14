@@ -5,7 +5,6 @@ from paint_struct.TrackElement import *
 from paint_struct.Coords import *
 from paint_struct.BoundBox import *
 from paint_struct.TrackSequenceTable import *
-from paint_struct.EdgeTable import *
 
 def paint_circus(paint_object, track_element, direction):
     circus_structure = PaintStruct()
@@ -14,6 +13,7 @@ def paint_circus(paint_object, track_element, direction):
     circus_structure.image_id_offset = "direction"
     circus_structure.boundbox_id = "structure"
     circus_structure.paint_type = PaintType.AddImageAsParent
+    circus_structure.height_supports = "heightSupports_3x3"
     paint_object.add_paint_struct(circus_structure)
 
 def calculate_bound_box(boundBoxEntry, boundBoxValue, al, cl):
@@ -50,7 +50,6 @@ def generate_json():
     #floor + fences + supports
     base_paint_struct = PaintStruct()
     base_paint_struct.track_sequence_mapping = "track_map_3x3"
-    base_paint_struct.edges = "edges_3x3"
     base_paint_struct.supports = SupportsType.WoodenA
     base_paint_struct.image_id_scheme = Scheme.Misc
     base_paint_struct.floor = FloorType.Cork
@@ -60,18 +59,6 @@ def generate_json():
     
     for direction in directions:
         paint_circus(paint_object, track_element, direction)
-    
-    #height supports
-    height_supports = PaintStruct()
-    height_supports.paint_type = PaintType.SetSegmentsSupportsHeight
-    height_supports.height_supports = "heightSupports_3x3"
-    paint_object.add_paint_struct(height_supports)
-
-    #track sequence table
-    sequenceTable = TrackSequenceTable()
-    sequenceTable.trackElement = TrackElement.FlatTrack3x3
-    sequenceTable.sequences = TrackMap3x3
-    paint_object.add_sequence_table(sequenceTable)
 
     #boundbox entries
     structure_entry = BoundBoxEntry()
@@ -79,20 +66,6 @@ def generate_json():
     for track_sequence in track_sequences:
         calculate_bound_boxes(structure_entry, track_sequence)
     paint_object.add_bound_box(structure_entry)
-
-    edgeTable = EdgeTable()
-    edgeTable.id = "edges_3x3"
-    edgeTable.edges = [
-        [],
-        [Edge.NE, Edge.NW],
-        [Edge.NE],
-        [Edge.NE, Edge.SE],
-        [Edge.NW],
-        [Edge.SE],
-        [Edge.SW, Edge.NW],
-        [Edge.SW, Edge.SE],
-        [Edge.SW]]
-    paint_object.add_edge_table(edgeTable)
 
     directionImageId = ImageIdOffset()
     directionImageId.id = "direction"
