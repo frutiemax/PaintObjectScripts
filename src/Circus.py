@@ -49,7 +49,6 @@ def generate_json():
 
     #floor + fences + supports
     base_paint_struct = PaintStruct()
-    base_paint_struct.track_sequence_mapping = "track_map_3x3"
     base_paint_struct.supports = SupportsType.WoodenA
     base_paint_struct.image_id_scheme = Scheme.Misc
     base_paint_struct.floor = FloorType.Cork

@@ -101,20 +101,17 @@ class PaintStructKey:
         self.element = None
         self.direction = None
         self.track_sequence = None
-        self.track_sequence_mapping = None
         self.vehicle_index = None
         self.vehicle_sprite_direction = None
         self.vehicle_pitch = None
         self.vehicle_num_peeps = None
+        self.session_current_rotation = None
     
     def to_dict(self):
         result = {}
 
         if self.element != None:
             result["trackElement"] = self.element
-
-        if self.track_sequence_mapping != None:
-            result["trackSequenceMapping"] = self.track_sequence_mapping
 
         if self.track_sequence != None:
             result["trackSequence"] = self.track_sequence
@@ -133,6 +130,9 @@ class PaintStructKey:
         
         if self.direction != None:
             result["direction"] = self.direction
+        
+        if self.session_current_rotation != None:
+            result["sessionCurrentRotation"] = self.session_current_rotation
         return result
 
         

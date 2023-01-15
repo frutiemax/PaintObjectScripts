@@ -39,9 +39,6 @@ def paint_twist_structure(paint_object, track_element, direction, xOffset, yOffs
     paintStruct.key.element = track_element
     paintStruct.image_id_offset = "structure"
     paintStruct.boundbox_id = "boundbox"
-
-    paintStruct.offset = Coords(xOffset, yOffset, 7)
-    paintStruct.boundbox = BoundBox(Coords(xOffset + 16, yOffset + 16, 7), Coords(24, 24, 48))
     paintStruct.primary_colour = Colour.VehicleBody
     paintStruct.secondary_colour = Colour.VehicleTrim
     paintStruct.primary_colour_index = 0
