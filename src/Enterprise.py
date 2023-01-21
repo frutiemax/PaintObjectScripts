@@ -100,10 +100,27 @@ def generate_image_id_offsets(paint_object):
 
 def generate_paint_structs(paint_object):
     paint_struct = PaintStruct()
+
     num_peepes = range(0,49)
     session_current_rotations = range(4)
     vehicle_pitches = range(49)
     vehicle_sprite_directions = [0, 8, 16, 24]
+
+    paint_struct.supports = SupportsType.WoodenA
+    paint_struct.image_id_scheme = Scheme.Misc
+    paint_struct.floor = FloorType.Cork
+    paint_struct.fences = FenceType.Ropes
+    paint_struct.key.vehicle_num_peeps = None
+    paint_struct.key.element = TrackElement.FlatTrack4x4
+    paint_struct.image_id_base = ImageIdBase.Car0
+    paint_struct.primary_colour = Colour.VehicleBody
+    paint_struct.secondary_colour = Colour.VehicleTrim
+    paint_struct.image_id_offset = "structure"
+    paint_struct.boundbox_id = "bb"
+    paint_struct.image_id_offset_index = 0
+    paint_struct.paint_type = PaintType.AddImageAsParent
+    paint_object.add_paint_struct(paint_struct)
+
     for session_current_rotation in session_current_rotations:
         for vehicle_pitch in vehicle_pitches:
             for vehicle_sprite_direction in vehicle_sprite_directions:
@@ -122,7 +139,7 @@ def generate_paint_structs(paint_object):
                     paint_struct.paint_type = PaintType.AddImageAsParent
                     paint_struct.key.vehicle_num_peeps = num_peeps
                     paint_struct.key.vehicle_pitch = vehicle_pitch
-                    paint_object.add_paint_struct(paint_struct)
+                    #paint_object.add_paint_struct(paint_struct)
 
                     paint_struct.image_id_offset = "peeps"
                     paint_struct.primary_colour = Colour.PeepTShirt
@@ -150,6 +167,19 @@ def generate_paint_structs(paint_object):
     supports = PaintStruct()
     supports.height_supports = "heightSupports_4x4"
     paint_object.add_paint_struct(supports)
+
+def generate_key_range(paint_object):
+    num_peepes = [i for i in range(0,49)]
+    session_current_rotations = [i for i in range(4)]
+    vehicle_pitches = [i for i in range(49)]
+    vehicle_sprite_directions = [0, 8, 16, 24]
+
+    key_range = PaintStructKeyRange()
+    key_range.VehicleNumPeeps = num_peepes
+    key_range.SessionCurrentRotations = session_current_rotations
+    key_range.VehiclePitches = vehicle_pitches
+    key_range.VehicleSpriteDirections = vehicle_sprite_directions
+    paint_object.set_key_range(key_range)
         
 
 def generate():
@@ -159,6 +189,7 @@ def generate():
     paint_object.set_source_game("official")
     paint_object.set_object_version("1.0")
     
+    generate_key_range(paint_object)
     generate_height_support_tables(paint_object)
     generate_vehicle_indices(paint_object)
     generate_bound_boxes(paint_object)

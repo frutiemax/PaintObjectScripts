@@ -47,6 +47,10 @@ def generate_json():
 
     paint_object = PaintObjectFile()
 
+    key_range = PaintStructKeyRange()
+    key_range.Directions = directions
+    paint_object.set_key_range(key_range)
+
     #floor + fences + supports
     base_paint_struct = PaintStruct()
     base_paint_struct.supports = SupportsType.WoodenA

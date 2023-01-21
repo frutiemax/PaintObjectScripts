@@ -208,3 +208,38 @@ class PaintStruct:
             result["supportsHeightId"] = self.height_supports
         
         return result
+
+class PaintStructKeyRange:
+    def __init__(self):
+        self.Elements = []
+        self.Directions = []
+        self.TrackSequences = []
+        self.VehicleNumPeeps = []
+        self.VehiclePitches = []
+        self.VehicleSpriteDirections = []
+        self.SessionCurrentRotations = []
+    
+    def to_dict(self):
+        result = {}
+
+        if len(self.Elements) > 0:
+            result["elements"] = self.Elements
+        
+        if len(self.Directions) > 0:
+            result["directions"] = self.Directions
+        
+        if len(self.TrackSequences) > 0:
+            result["trackSequences"] = self.TrackSequences
+        
+        if len(self.VehicleNumPeeps) > 0:
+            result["vehicleNumPeeps"] = self.VehicleNumPeeps
+        
+        if len(self.VehiclePitches) > 0:
+            result["vehiclePitches"] = self.VehiclePitches
+        
+        if len(self.VehicleSpriteDirections) > 0:
+            result["vehicleSpriteDirections"] = self.VehicleSpriteDirections
+        
+        if len(self.SessionCurrentRotations) > 0:
+            result["sessionCurrentRotations"] = self.SessionCurrentRotations
+        return result

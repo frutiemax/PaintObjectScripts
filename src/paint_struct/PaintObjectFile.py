@@ -12,6 +12,7 @@ class PaintObjectFile:
         self.imageIdOffsets = []
         self.vehicleIndices = []
         self.bound_boxes = []
+        self.key_range = {}
         self.id = ""
         self.version = ""
         self.authors = []
@@ -29,6 +30,9 @@ class PaintObjectFile:
 
     def set_vehicle_indices(self, vehicle_indices):
         self.vehicleIndices = vehicle_indices
+    
+    def set_key_range(self, key_range):
+        self.key_range = key_range.to_dict()
     
     def add_paint_struct(self, paint_struct):
         dict = paint_struct.to_dict()
@@ -59,6 +63,7 @@ class PaintObjectFile:
         dict["heightSupportsTables"] = self.height_tables
         dict["vehicleIndices"] = self.vehicleIndices
         dict["boundBoxes"] = self.bound_boxes
+        dict["keyRanges"] = self.key_range
         dict["imageIdOffsets"] = self.imageIdOffsets
         dict["paintStructs"] = self.paint_structs
         result += json.dumps(dict, indent=4)
