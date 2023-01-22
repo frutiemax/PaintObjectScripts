@@ -23,7 +23,7 @@ def calculate_bound_box(boundBoxEntry, boundBoxValue, al, cl):
 
 def calculate_bound_boxes(boundBoxEntry, track_sequence):
     boundBoxValue = BoundBoxEntryValue()
-    boundBoxValue.track_sequence = track_sequence
+    boundBoxValue.key.track_sequence = track_sequence
     match track_sequence:
         case 1:
             calculate_bound_box(boundBoxEntry, boundBoxValue, 32, 32)
@@ -58,9 +58,11 @@ def generate_json():
     base_paint_struct.floor = FloorType.Cork
     base_paint_struct.fences = FenceType.Ropes
     base_paint_struct.key.element = track_element
+    base_paint_struct.image_id_base = ImageIdBase.Car0
     paint_object.add_paint_struct(base_paint_struct)
     
     for direction in directions:
+        base_paint_struct.supports_type = (direction & 1)
         paint_circus(paint_object, track_element, direction)
 
     #boundbox entries

@@ -33,7 +33,7 @@ def generate_bound_boxes(paint_object):
         bb_value = BoundBoxEntryValue()
         bb_value.coords = offset
         bb_value.bound_box = bb
-        bb_value.track_sequence = track_sequence
+        bb_value.key.track_sequence = track_sequence
         bound_box_entry.add_value(bb_value)
     paint_object.add_bound_box(bound_box_entry)
 
@@ -126,6 +126,7 @@ def generate_paint_structs(paint_object):
             for vehicle_sprite_direction in vehicle_sprite_directions:
                 for num_peeps in num_peepes:
                     paint_struct.supports = SupportsType.WoodenA
+                    paint_struct.supports_type = (int(session_current_rotation / 8) & 1)
                     paint_struct.image_id_scheme = Scheme.Misc
                     paint_struct.floor = FloorType.Cork
                     paint_struct.fences = FenceType.Ropes

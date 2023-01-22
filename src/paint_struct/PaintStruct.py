@@ -78,10 +78,9 @@ class BoundBoxEntryValue:
     def __init__(self):
         self.coords = Coords(0, 0, 0)
         self.bound_box = BoundBox(Coords(0, 0, 0), Coords(0, 0, 0))
-        self.track_sequence = 0
+        self.key = PaintStructKey()
     def to_dict(self):
-        result = {}
-        result["trackSequence"] = self.track_sequence
+        result = self.key.to_dict()
         result["offset_x"] = self.coords.x
         result["offset_y"] = self.coords.y
         result["offset_z"] = self.coords.z
@@ -105,6 +104,7 @@ class PaintStructKey:
         self.vehicle_sprite_direction = None
         self.vehicle_pitch = None
         self.vehicle_num_peeps = None
+        self.vehicle_restraints_position = None
         self.session_current_rotation = None
     
     def to_dict(self):
@@ -133,6 +133,10 @@ class PaintStructKey:
         
         if self.session_current_rotation != None:
             result["sessionCurrentRotation"] = self.session_current_rotation
+        
+        if self.vehicle_restraints_position != None:
+            result["vehicleRestraintsPosition"] = self.vehicle_restraints_position
+        
         return result
 
         
@@ -144,6 +148,7 @@ class PaintStruct:
 
         #outputs
         self.supports = None
+        self.supports_type = None
         self.floor = None
         self.edges = None
         self.fences = None
@@ -164,6 +169,9 @@ class PaintStruct:
         
         if self.supports != None:
             result["supports"] = self.supports
+        
+        if self.supports_type != None:
+            result["supportsType"] = self.supports_type
 
         if self.floor != None:
             result["floor"] = self.floor
@@ -216,6 +224,7 @@ class PaintStructKeyRange:
         self.TrackSequences = []
         self.VehicleNumPeeps = []
         self.VehiclePitches = []
+        self.VehicleRestraintsPositions = []
         self.VehicleSpriteDirections = []
         self.SessionCurrentRotations = []
     
@@ -242,4 +251,7 @@ class PaintStructKeyRange:
         
         if len(self.SessionCurrentRotations) > 0:
             result["sessionCurrentRotations"] = self.SessionCurrentRotations
+        
+        if len(self.VehicleRestraintsPositions) > 0:
+            result["vehicleRestraintsPositions"] = self.VehicleRestraintsPositions
         return result

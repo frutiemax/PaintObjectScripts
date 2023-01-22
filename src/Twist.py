@@ -14,7 +14,7 @@ def calculate_bound_box(boundBoxEntry, boundBoxValue, xOffset, yOffset):
 
 def calculate_bound_boxes(boundBoxEntry, track_sequence):
     boundBoxValue = BoundBoxEntryValue()
-    boundBoxValue.track_sequence = track_sequence
+    boundBoxValue.key.track_sequence = track_sequence
     match track_sequence:
         case 1:
             calculate_bound_box(boundBoxEntry, boundBoxValue, 32, 32)
@@ -44,6 +44,11 @@ def paint_twist_structure(paint_object, track_element, direction, xOffset, yOffs
     paintStruct.primary_colour_index = 0
     paintStruct.secondary_colour_index = 0
     paintStruct.image_id_scheme = Scheme.Misc
+    paintStruct.supports = SupportsType.WoodenA
+    paintStruct.supports_type = (direction & 1)
+    paintStruct.image_id_scheme = Scheme.Misc
+    paintStruct.floor = FloorType.Cork
+    paintStruct.fences = FenceType.Ropes
     paint_object.add_paint_struct(paintStruct)
 
     #peeps
@@ -86,7 +91,6 @@ def calculate_peep_image_id(direction, vehicle_sprite_direction, vehicle_pitch, 
     return result
 
 def generate_json():
-    
     track_sequences = [0, 1, 2, 3, 4, 5, 6, 7, 8]
     directions = [0, 1, 2, 3]
     track_element = TrackElement.FlatTrack3x3
@@ -96,24 +100,15 @@ def generate_json():
 
     paint_object = PaintObjectFile()
 
-    #floor + fences + supports
-    base_paint_struct = PaintStruct()
-    base_paint_struct.edges = "edges_3x3"
-    base_paint_struct.supports = SupportsType.WoodenA
-    base_paint_struct.image_id_scheme = Scheme.Misc
-    base_paint_struct.floor = FloorType.Cork
-    base_paint_struct.fences = FenceType.Ropes
-    base_paint_struct.element = track_element
-    paint_object.add_paint_struct(base_paint_struct)
-    
-    #generate single keys
-    for arg in track_sequences:
-        singleKey = PaintStruct()
-        singleKey.key.track_sequence = arg
-        paint_object.add_paint_struct(singleKey)
-    noPeepKey = PaintStruct()
-    noPeepKey.key.vehicle_num_peeps = 0
-    paint_object.add_paint_struct(noPeepKey)
+    #keyRange
+    key_range = PaintStructKeyRange()
+    key_range.TrackSequences = track_sequences
+    key_range.Elements = [track_element]
+    key_range.Directions = directions
+    key_range.VehiclePitches = vehicle_pitch_values
+    key_range.VehicleNumPeeps = vehicle_num_peeps_values
+    key_range.VehicleSpriteDirections = vehicle_sprite_direction_values
+    paint_object.set_key_range(key_range)
 
     #generate all the possible combinations to pass through the paint function
     #we only need the peep_num variable for the loop
