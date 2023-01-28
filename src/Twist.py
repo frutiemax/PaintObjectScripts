@@ -55,6 +55,10 @@ def paint_twist_structure(paint_object, track_element, direction, xOffset, yOffs
     paintStruct.key.vehicle_num_peeps = vehicle_num_peeps
     paintStruct.primary_colour = Colour.PeepTShirt
     paintStruct.secondary_colour = Colour.PeepTShirt
+    paintStruct.supports = None
+    paintStruct.floor = None
+    paintStruct.fences = None
+    paintStruct.supports_type = None
 
     index = 0
     for i in range(0, vehicle_num_peeps, 2):
